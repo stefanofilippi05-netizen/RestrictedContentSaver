@@ -5,7 +5,7 @@ from pymongo.server_api import ServerApi
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 
-# Recupera la stringa MongoDB dalle variabili d'ambiente o usa il fallback
+# URL MongoDB
 MONGO_URL = os.environ.get(
     "DATABASE_URL", 
     os.environ.get(
@@ -14,10 +14,21 @@ MONGO_URL = os.environ.get(
     )
 )
 
-# Variabili richieste dai moduli del bot (sostituisci i valori se necessario)
+# Variabili di configurazione richieste dal bot
 channel_id = int(os.environ.get("CHANNEL_ID", "-1000000000000"))
 INVITE_LINK = os.environ.get("INVITE_LINK", "https://t.me/")
 
+# Altre variabili globali che il bot si aspetta di importare
+rbot = None
+ubot = None
+DEVELOPER = "CoderX"
+SUPPORT = "https://t.me/StarkBotsChat"
+UPDATES = "https://t.me/StarkBots"
+CX = "https://t.me/CoderX"
+UPDATES_LINK = "https://t.me/StarkBots"
+REPO_LINK = "https://github.com/StarkBotsIndustries/RestrictedContentSaver"
+
+# Connessione MongoDB
 mc = MongoClient(MONGO_URL, server_api=ServerApi('1'))
 db = mc["UNIcache"]
 
@@ -64,5 +75,3 @@ def initialize_database():
         print("MongoDB Connected Successfully!")
     except Exception as e:
         print(f"MongoDB Connection Error: {e}")
-
-DEVELOPER = "CoderX"
