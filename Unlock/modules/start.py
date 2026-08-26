@@ -61,7 +61,7 @@ async def start(bot: Client, m: Message):
         "2️⃣ Use commands like `/save` to retrieve content.\n\n"
         "For help, click on **Help** or type `/help`."
     )
-    await m.reply_photo(photo=photo, caption=start_text, reply_markup=btn)
+    await m.reply_text(text=start_text, reply_markup=btn, disable_web_page_preview=True)
 
 
 @Client.on_message(filters.command("help"))
