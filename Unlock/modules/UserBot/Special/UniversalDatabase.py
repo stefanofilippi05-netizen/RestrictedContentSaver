@@ -5,8 +5,7 @@ from pymongo.server_api import ServerApi
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 
-# Cerca la stringa MongoDB nelle variabili d'ambiente.
-# Se non trova nulla, usa la tua stringa personalizzata inserita qui sotto.
+# Recupera la stringa MongoDB dalle variabili d'ambiente o usa il fallback
 MONGO_URL = os.environ.get(
     "DATABASE_URL", 
     os.environ.get(
@@ -14,6 +13,10 @@ MONGO_URL = os.environ.get(
         "mongodb+srv://stefano:nkKMhPsyZEl4x9Fw@cluster0.pua77pf.mongodb.net/?appName=Cluster0"
     )
 )
+
+# Variabili richieste dai moduli del bot (sostituisci i valori se necessario)
+channel_id = int(os.environ.get("CHANNEL_ID", "-1000000000000"))
+INVITE_LINK = os.environ.get("INVITE_LINK", "https://t.me/")
 
 mc = MongoClient(MONGO_URL, server_api=ServerApi('1'))
 db = mc["UNIcache"]
