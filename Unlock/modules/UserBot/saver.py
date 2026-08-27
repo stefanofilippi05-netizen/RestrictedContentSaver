@@ -100,8 +100,6 @@ async def saver(m: Message, chat_id: int, msg_id: int, chat_type: str, joining_l
             file_id = getattr(msg, file_type).file_id
             size = size_func(msg)
 
-    # Limite di 50MB rimosso con successo! Ora accetta qualsiasi dimensione.
-
     if msg.chat.has_protected_content == False:
         await processing_msg.edit_text("Bruh, the channel isn't even restricted...")
         await ubot.leave_chat(chat_id)
@@ -182,7 +180,5 @@ async def saver(m: Message, chat_id: int, msg_id: int, chat_type: str, joining_l
     try:
         await ubot.leave_chat(chat_id)
     except:
-        pass
-    return None
         pass
     return None
