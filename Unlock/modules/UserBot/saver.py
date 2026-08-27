@@ -3,29 +3,6 @@ Media Saver Module
 
 This script handles downloading media files from Telegram messages, caching them, and
 re-uploading them to a specified channel for easier access and sharing.
-
-Author:
-    - @CoderX on Telegram
-    - @Snehashish06 on GitHub
-
-Project:
-    - Developed for the @StarkBots channel on Telegram.
-
-License:
-    This code is open-source and can be reused or modified under the following conditions:
-    1. Proper credits must be given to the original authors.
-    2. A link to the original source must be included in derivative works.
-
-Disclaimer:
-    This project was coded solely for learning purposes. The owner will not be held responsible
-    for any misuse, illegal activities, or violations of Terms of Service (ToS) of any platform 
-    arising from the use or modification of this code. Users are strongly advised to comply with 
-    the applicable rules and regulations of the services they interact with.
-
-Dependencies:
-    - Pyrogram
-    - UniversalDatabase (for data caching and retrieval)
-    - UserBot instance (`ubot`)
 """
 
 import os
@@ -42,21 +19,13 @@ from pyrogram.errors import (
     ChannelPrivate
 )
 
-from ... import ubot, MAX_ALLOWED_DOWNLOAD_SIZE
+from ... import ubot
 from .Special.UniversalDatabase import SD, channel_id, INVITE_LINK
-
-
 
 
 def bytes_to_mb(bytes: int) -> float:
     """
     Convert bytes to megabytes (MB).
-
-    Args:
-        bytes (int): The size in bytes.
-
-    Returns:
-        float: The size in MB.
     """
     return bytes / 1048576
 
@@ -64,16 +33,6 @@ def bytes_to_mb(bytes: int) -> float:
 async def saver(m: Message, chat_id: int, msg_id: int, chat_type: str, joining_link: str = None, processing_msg = None) -> dict:
     """
     Save media from a Telegram message, process it, and optionally cache it.
-
-    Args:
-        m (Message): Incoming message object from Pyrogram.
-        chat_id (int): The ID of the chat containing the target message.
-        msg_id (int): The ID of the message containing media.
-        chat_type (str): Type of chat - "private" or "public".
-        joining_link (str, optional): Link to join a private chat, if required.
-
-    Returns:
-        dict: Details about the saved media, or an error message.
     """
     # Attempt to join the private chat if required
     if chat_type == "private":
@@ -98,11 +57,12 @@ async def saver(m: Message, chat_id: int, msg_id: int, chat_type: str, joining_l
         pass
     except Exception as e:
         logging.error(e)
+
     # Fetch the specified message
     try:
         msg = await ubot.get_messages(chat_id, int(msg_id))
     except ChannelPrivate:
-        await processing_msg.edit_text(f"I am banned from this channel.")
+        await processing_msg.edit_text("I am banned from this channel.")
         return None
     except Exception as e:
         logging.error("Failed to fetch message: %s", e)
@@ -112,6 +72,7 @@ async def saver(m: Message, chat_id: int, msg_id: int, chat_type: str, joining_l
     if msg.empty is True:
         await processing_msg.edit_text("Are you sure?")
         return None
+
     # Check if the media is already cached
     cached = SD().read_data(msg.link)
     if cached:
@@ -139,15 +100,13 @@ async def saver(m: Message, chat_id: int, msg_id: int, chat_type: str, joining_l
             file_id = getattr(msg, file_type).file_id
             size = size_func(msg)
 
-    # Validate file size
-    if bytes_to_mb(size) > MAX_ALLOWED_DOWNLOAD_SIZE:
-        await processing_msg.edit_text("File is too large. The limit is 50MB, you can subscribe to premium for limits upto 4GB. To upgrade pm: @CoderX")
-        return None
+    # Limite di 50MB rimosso con successo! Ora accetta qualsiasi dimensione.
 
     if msg.chat.has_protected_content == False:
         await processing_msg.edit_text("Bruh, the channel isn't even restricted...")
         await ubot.leave_chat(chat_id)
         return None
+
     # Retrieve caption or fallback to text
     caption = msg.caption or msg.text or None
 
@@ -179,7 +138,7 @@ async def saver(m: Message, chat_id: int, msg_id: int, chat_type: str, joining_l
                 datasave = True
             elif file_type == "photo":
                 file_path = await ubot.download_media(file_id)
-                msgg = await ubot.send_photo(chat_id=channel_id, photo=file_path,has_spoiler=1, caption=msg.caption)
+                msgg = await ubot.send_photo(chat_id=channel_id, photo=file_path, has_spoiler=1, caption=msg.caption)
                 cache_msg_id = msgg.id
                 datasave = True
             elif file_type == "voice":
@@ -204,6 +163,7 @@ async def saver(m: Message, chat_id: int, msg_id: int, chat_type: str, joining_l
             os.remove(down_thumb)
     except:
         pass
+
     # Cache the file information if successfully saved
     if datasave:
         SD().write_data(cache_msg_id, msg.link, m.from_user.id, file_type)
@@ -222,5 +182,7 @@ async def saver(m: Message, chat_id: int, msg_id: int, chat_type: str, joining_l
     try:
         await ubot.leave_chat(chat_id)
     except:
+        pass
+    return None
         pass
     return None
