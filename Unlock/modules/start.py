@@ -32,12 +32,7 @@ from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, 
 async def start(bot: Client, m: Message):
     """
     Handle the /start command. Sends a welcoming message to the user with buttons for navigation.
-
-    Args:
-        bot (Client): The bot client instance.
-        m (Message): Incoming message object.
     """
-    photo = "https://imgur.com/a/oukNSXa"  # Replace with a valid image URL
     btn = InlineKeyboardMarkup(
         [
             [
@@ -58,7 +53,7 @@ async def start(bot: Client, m: Message):
         "🔹 Open-source for transparency.\n\n"
         "📝 **Usage:**\n"
         "1️⃣ Send the link of restricted content to save.\n"
-        "2️⃣ Use commands like `/save` to retrieve content.\n\n"
+        "2️⃣ Use commands to retrieve content.\n\n"
         "For help, click on **Help** or type `/help`."
     )
     await m.reply_text(text=start_text, reply_markup=btn, disable_web_page_preview=True)
@@ -68,17 +63,12 @@ async def start(bot: Client, m: Message):
 async def help(bot: Client, m: Message):
     """
     Handle the /help command. Provides details about bot features and usage.
-
-    Args:
-        bot (Client): The bot client instance.
-        m (Message): Incoming message object.
     """
     help_text = (
         "**🆘 Help - Restricted Content Saver Bot**\n\n"
         "🔹 **Commands:**\n"
         "• `/start`: Start the bot and view the welcome message.\n"
         "• `/help`: Display this help message.\n"
-        "• `/repo`: View the bot's source code.\n"
         "• `/tos`: Read the bot's terms of service.\n\n"
         "🔹 **How to Use:**\n"
         "1️⃣ Send a restricted content link to the bot.\n"
@@ -92,10 +82,6 @@ async def help(bot: Client, m: Message):
 async def tos(bot: Client, m: Message):
     """
     Handle the /tos command. Displays the bot's Terms of Service.
-
-    Args:
-        bot (Client): The bot client instance.
-        m (Message): Incoming message object.
     """
     tos_text = (
         "**📜 Terms of Service - Restricted Content Saver Bot**\n\n"
@@ -108,15 +94,10 @@ async def tos(bot: Client, m: Message):
     await m.reply_text(tos_text)
 
 
-
 @Client.on_callback_query(filters.regex("tos"))
 async def tos_callback(bot: Client, q: CallbackQuery):
     """
     Handle ToS button callback. Displays the bot's Terms of Service.
-
-    Args:
-        bot (Client): The bot client instance.
-        q (CallbackQuery): Incoming callback query object.
     """
     btn = InlineKeyboardMarkup(
         [
@@ -138,10 +119,6 @@ async def tos_callback(bot: Client, q: CallbackQuery):
 async def back_to_home(bot: Client, q: CallbackQuery):
     """
     Handle back button callback. Returns to the start message.
-
-    Args:
-        bot (Client): The bot client instance.
-        q (CallbackQuery): Incoming callback query object.
     """
     btn = InlineKeyboardMarkup(
         [
